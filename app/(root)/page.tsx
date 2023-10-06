@@ -1,9 +1,17 @@
+import { fetchAllNotes } from "@/lib/actions/Note.actions";
 import { UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/app-beta";
+import { Box, Typography } from "@mui/material";
 
-export default function Home() {
+export default async function Home() {
+  const user = await currentUser();
+
+  if (!user) return null;
+
   return (
-    <main>
+    <Box>
       <UserButton afterSignOutUrl="/" />
-    </main>
+      <Typography variant="h6">Let's begin</Typography>
+    </Box>
   );
 }

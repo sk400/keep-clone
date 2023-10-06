@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^4.25.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.12",
     "@mui/material": "^5.14.12",
     "install": "^0.13.0",
     "mongoose": "^7.5.4",
