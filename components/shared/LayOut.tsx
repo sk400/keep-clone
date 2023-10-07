@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Toolbar,
@@ -13,11 +13,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Avatar,
   Drawer,
   Input,
-  Menu,
-  MenuItem,
   Modal,
   Paper,
   Stack,
@@ -27,16 +24,29 @@ import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import MenuIcon from "@mui/icons-material/Menu";
 import { styled, CSSObject } from "@mui/material/styles";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 import {
+  Add,
   ArchiveOutlined,
+  CloseOutlined,
   CreateOutlined,
+  Delete,
   DeleteOutline,
+  LabelOutlined,
+  LabelRounded,
   LightbulbOutlined,
   Router,
 } from "@mui/icons-material";
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
+import {
+  createLabel,
+  deleteLabel,
+  fetchLabels,
+  updateLabel,
+} from "@/lib/actions/Label.actions";
+import { Label } from "@/typings";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
@@ -115,13 +125,47 @@ const XsDrawer = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-const LayOut = ({ children }: { children: React.ReactNode }) => {
+const LayOut = ({
+  children,
+  labels,
+}: {
+  children: React.ReactNode;
+  labels: Label[];
+}) => {
   const [open, setOpen] = useState(false);
   const [openXsDrawer, setOpenXsDrawer] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [labelName, setLabelName] = useState("");
+  const [newLabelName, setNewLabelName] = useState("");
+  const [labelId, setLabelId] = useState("");
+
   const router = useRouter();
+  const { userId } = useAuth();
 
   const handleDrawerOpen = () => {
     setOpen(!open);
+  };
+
+  const handleCreateLabel = async () => {
+    await createLabel({ name: labelName, userId: userId! });
+    setLabelName("");
+  };
+
+  const handleDeleteLabel = async () => {
+    const isAgreed = confirm(
+      "Are you really want to delete the label? You can not get the label back."
+    );
+
+    if (isAgreed) {
+      await deleteLabel(labelId);
+    }
+  };
+
+  const editLabel = async () => {
+    await updateLabel(labelId!, newLabelName);
+    setLabelId("");
+    setNewLabelName("");
   };
 
   return (
@@ -308,6 +352,7 @@ const LayOut = ({ children }: { children: React.ReactNode }) => {
             }}
             onClick={() => {
               setOpenXsDrawer(false);
+              setOpenModal(!openModal);
             }}
           >
             <ListItemButton
@@ -327,6 +372,42 @@ const LayOut = ({ children }: { children: React.ReactNode }) => {
               <ListItemText primary="Edit label" />
             </ListItemButton>
           </ListItem>
+          {labels?.length !== 0 &&
+            labels?.map((label) => (
+              <Link
+                href={`/labels/${label?._id}`}
+                style={{ textDecoration: "none", color: "black" }}
+                key={label?._id}
+              >
+                <ListItem
+                  disablePadding
+                  sx={{
+                    display: "block",
+                    "&:hover": {
+                      backgroundColor: "#feefc3",
+                    },
+                  }}
+                  onClick={() => setOpenXsDrawer(false)}
+                >
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                      }}
+                    >
+                      <LabelOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary={label?.name} />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            ))}
         </List>
       </XsDrawer>
 
@@ -430,6 +511,7 @@ const LayOut = ({ children }: { children: React.ReactNode }) => {
                 backgroundColor: "#feefc3",
               },
             }}
+            onClick={() => setOpenModal(!openModal)}
           >
             <ListItemButton
               sx={{
@@ -448,10 +530,219 @@ const LayOut = ({ children }: { children: React.ReactNode }) => {
               <ListItemText primary="Edit label" />
             </ListItemButton>
           </ListItem>
+          {labels?.length !== 0 &&
+            labels?.map((label) => (
+              <Link
+                href={`/labels/${label?._id}`}
+                style={{ textDecoration: "none", color: "black" }}
+                key={label?._id}
+              >
+                <ListItem
+                  disablePadding
+                  sx={{
+                    display: "block",
+                    "&:hover": {
+                      backgroundColor: "#feefc3",
+                    },
+                  }}
+                >
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <LabelOutlined />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={label?.name}
+                      sx={{
+                        opacity: open ? 1 : 0,
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            ))}
         </List>
       </MdDrawer>
 
-      {children}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        {children}
+      </Box>
+
+      <Modal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <Paper
+            sx={{
+              maxWidth: "250px",
+              height: "250px",
+              p: 2,
+              position: "relative",
+            }}
+            square
+          >
+            <Typography variant="subtitle2" gutterBottom>
+              Edit labels
+            </Typography>
+
+            <IconButton
+              onClick={() => setOpenModal(false)}
+              sx={{
+                position: "absolute",
+                top: 1,
+                right: 1,
+                zIndex: 5,
+              }}
+            >
+              <CloseOutlined />
+            </IconButton>
+
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Input
+                placeholder="Create a new label"
+                type="text"
+                value={labelName}
+                onChange={(e) => setLabelName(e.target.value)}
+              />
+              <IconButton
+                onClick={() => {
+                  handleCreateLabel();
+                  setOpenModal(false);
+                }}
+              >
+                <Add />
+              </IconButton>
+            </Stack>
+            <List
+              sx={{
+                height: "150px",
+                overflowY: "auto",
+              }}
+            >
+              {labels?.map((label) => (
+                <ListItem disablePadding key={label?._id}>
+                  <ListItemButton
+                    onClick={() => {
+                      setLabelId(label?._id);
+                      setOpenEditModal(true);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <LabelRounded />
+                    </ListItemIcon>
+                    <ListItemText primary={label?.name} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            {/* Rename label modal */}
+            <Modal
+              open={openEditModal}
+              onClose={() => setOpenEditModal(false)}
+              aria-labelledby="parent-modal-title"
+              aria-describedby="parent-modal-description"
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100vh",
+                  position: "relative",
+                }}
+              >
+                <Paper
+                  sx={{
+                    maxWidth: "250px",
+                    height: "250px",
+                    p: 2,
+                    position: "relative",
+                  }}
+                  square
+                >
+                  <Typography variant="subtitle2" gutterBottom>
+                    New name for label
+                  </Typography>
+
+                  <IconButton
+                    onClick={() => setOpenEditModal(false)}
+                    sx={{
+                      position: "absolute",
+                      top: 1,
+                      right: 1,
+                      zIndex: 5,
+                    }}
+                  >
+                    <CloseOutlined />
+                  </IconButton>
+
+                  <Stack direction="row" alignItems="center" spacing={1} my={2}>
+                    <Input
+                      placeholder="New name"
+                      type="text"
+                      value={newLabelName}
+                      onChange={(e) => setNewLabelName(e.target.value)}
+                    />
+                    <IconButton
+                      onClick={() => {
+                        editLabel();
+                        setOpenEditModal(false);
+                        setOpenModal(false);
+                      }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Stack>
+                  <Tooltip
+                    title="Delete label"
+                    placement="bottom"
+                    sx={{
+                      position: "absolute",
+                      bottom: 3,
+                      right: 3,
+
+                      width: "50px",
+                      height: "50px",
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => {
+                        handleDeleteLabel();
+                        setOpenEditModal(false);
+                        setOpenModal(false);
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Paper>
+              </Box>
+            </Modal>
+          </Paper>
+        </Box>
+      </Modal>
     </Box>
   );
 };
