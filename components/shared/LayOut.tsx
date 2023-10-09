@@ -248,7 +248,14 @@ const LayOut = ({
         <Divider />
         <List>
           {/* Notes */}
-          <Link href="/" prefetch={true}>
+          <Link
+            href="/"
+            prefetch={true}
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
             <ListItem
               disablePadding
               sx={{
@@ -282,7 +289,14 @@ const LayOut = ({
           </Link>
 
           {/* Archive */}
-          <Link href="/archive" prefetch={true}>
+          <Link
+            href="/archive"
+            prefetch={true}
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
             <ListItem
               disablePadding
               sx={{
@@ -315,7 +329,14 @@ const LayOut = ({
             </ListItem>
           </Link>
           {/* Bin */}
-          <Link href="/bin" prefetch={true}>
+          <Link
+            href="/bin"
+            prefetch={true}
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
             <ListItem
               disablePadding
               sx={{
@@ -427,7 +448,14 @@ const LayOut = ({
         <Divider />
         <List>
           {/* Notes */}
-          <Link href="/" prefetch={true}>
+          <Link
+            href="/"
+            prefetch={true}
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
             <ListItem
               disablePadding
               sx={{
@@ -457,7 +485,14 @@ const LayOut = ({
             </ListItem>
           </Link>
           {/* Archive */}
-          <Link href="/archive" prefetch={true}>
+          <Link
+            href="/archive"
+            prefetch={true}
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
             <ListItem
               disablePadding
               sx={{
@@ -488,7 +523,14 @@ const LayOut = ({
           </Link>
 
           {/* Bin */}
-          <Link href="/bin" prefetch={true}>
+          <Link
+            href="/bin"
+            prefetch={true}
+            style={{
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
             <ListItem
               disablePadding
               sx={{
