@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import React from "react";
 
+export const revalidate = "force-cache";
+
 const Page = async () => {
   const user = await currentUser();
 

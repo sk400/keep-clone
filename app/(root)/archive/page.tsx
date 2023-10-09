@@ -3,6 +3,8 @@ import { fetchNotes } from "@/lib/actions/Note.actions";
 import { currentUser } from "@clerk/nextjs";
 import { Box, Typography } from "@mui/material";
 
+export const revalidate = "force-cache";
+
 const Page = async () => {
   const user = await currentUser();
 
@@ -10,7 +12,7 @@ const Page = async () => {
 
   const archivedNotes = await fetchNotes({ userId: user.id, archived: true });
 
-  console.log(archivedNotes);
+  // console.log(archivedNotes);
 
   let message = "You haven't any archived notes.";
 

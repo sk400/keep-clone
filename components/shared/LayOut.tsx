@@ -248,99 +248,106 @@ const LayOut = ({
         <Divider />
         <List>
           {/* Notes */}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-              "&:hover": {
-                backgroundColor: "#feefc3",
-              },
-            }}
-            onClick={() => {
-              setOpenXsDrawer(false);
-              router.push("/");
-            }}
-          >
-            <ListItemButton
+          <Link href="/" prefetch={true}>
+            <ListItem
+              disablePadding
               sx={{
-                minHeight: 48,
-                px: 2.5,
+                display: "block",
+                "&:hover": {
+                  backgroundColor: "#feefc3",
+                },
+              }}
+              onClick={() => {
+                setOpenXsDrawer(false);
+                // router.push("/");
               }}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: 3,
+                  minHeight: 48,
+                  px: 2.5,
                 }}
               >
-                <LightbulbOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Notes" />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                  }}
+                >
+                  <LightbulbOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Notes" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
 
           {/* Archive */}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-              "&:hover": {
-                backgroundColor: "#feefc3",
-              },
-            }}
-            onClick={() => {
-              setOpenXsDrawer(false);
-              router.push("/");
-            }}
-          >
-            <ListItemButton
+          <Link href="/archive" prefetch={true}>
+            <ListItem
+              disablePadding
               sx={{
-                minHeight: 48,
-                px: 2.5,
+                display: "block",
+                "&:hover": {
+                  backgroundColor: "#feefc3",
+                },
+              }}
+              onClick={() => {
+                setOpenXsDrawer(false);
+                // router.push("/");
               }}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: 3,
+                  minHeight: 48,
+                  px: 2.5,
                 }}
               >
-                <ArchiveOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Archive" />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                  }}
+                >
+                  <ArchiveOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Archive" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
           {/* Bin */}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-              "&:hover": {
-                backgroundColor: "#feefc3",
-              },
-            }}
-            onClick={() => {
-              setOpenXsDrawer(false);
-              router.push("/bin");
-            }}
-          >
-            <ListItemButton
+          <Link href="/bin" prefetch={true}>
+            <ListItem
+              disablePadding
               sx={{
-                minHeight: 48,
-                px: 2.5,
+                display: "block",
+                "&:hover": {
+                  backgroundColor: "#feefc3",
+                },
+              }}
+              onClick={() => {
+                setOpenXsDrawer(false);
+                // router.push("/bin");
               }}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: 3,
+                  minHeight: 48,
+                  px: 2.5,
                 }}
               >
-                <DeleteOutline />
-              </ListItemIcon>
-              <ListItemText primary="Bin" />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                  }}
+                >
+                  <DeleteOutline />
+                </ListItemIcon>
+                <ListItemText primary="Bin" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
           {/* Edit label */}
           <ListItem
             disablePadding
@@ -372,6 +379,7 @@ const LayOut = ({
               <ListItemText primary="Edit label" />
             </ListItemButton>
           </ListItem>
+
           {labels?.length !== 0 &&
             labels?.map((label) => (
               <Link
@@ -419,89 +427,96 @@ const LayOut = ({
         <Divider />
         <List>
           {/* Notes */}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-              "&:hover": {
-                backgroundColor: "#feefc3",
-              },
-            }}
-            onClick={() => router.push("/")}
-          >
-            <ListItemButton
+          <Link href="/" prefetch={true}>
+            <ListItem
+              disablePadding
               sx={{
-                minHeight: 48,
-                px: 2.5,
+                display: "block",
+                "&:hover": {
+                  backgroundColor: "#feefc3",
+                },
               }}
+              // onClick={() => router.push("/")}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: 3,
+                  minHeight: 48,
+                  px: 2.5,
                 }}
               >
-                <LightbulbOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Notes" />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                  }}
+                >
+                  <LightbulbOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Notes" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
           {/* Archive */}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-              "&:hover": {
-                backgroundColor: "#feefc3",
-              },
-            }}
-            onClick={() => router.push("/archive")}
-          >
-            <ListItemButton
+          <Link href="/archive" prefetch={true}>
+            <ListItem
+              disablePadding
               sx={{
-                minHeight: 48,
-                px: 2.5,
+                display: "block",
+                "&:hover": {
+                  backgroundColor: "#feefc3",
+                },
               }}
+              // onClick={() => router.push("/archive")}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: 3,
+                  minHeight: 48,
+                  px: 2.5,
                 }}
               >
-                <ArchiveOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Archive" />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                  }}
+                >
+                  <ArchiveOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Archive" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
           {/* Bin */}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-              "&:hover": {
-                backgroundColor: "#feefc3",
-              },
-            }}
-            onClick={() => router.push("/bin")}
-          >
-            <ListItemButton
+          <Link href="/bin" prefetch={true}>
+            <ListItem
+              disablePadding
               sx={{
-                minHeight: 48,
-                px: 2.5,
+                display: "block",
+                "&:hover": {
+                  backgroundColor: "#feefc3",
+                },
               }}
+              // onClick={() => router.push("/bin")}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: 3,
+                  minHeight: 48,
+                  px: 2.5,
                 }}
               >
-                <DeleteOutline />
-              </ListItemIcon>
-              <ListItemText primary="Bin" />
-            </ListItemButton>
-          </ListItem>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                  }}
+                >
+                  <DeleteOutline />
+                </ListItemIcon>
+                <ListItemText primary="Bin" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
           {/* Edit label */}
           <ListItem
             disablePadding

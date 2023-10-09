@@ -4,6 +4,8 @@ import { currentUser } from "@clerk/nextjs/app-beta";
 import { Box, Typography } from "@mui/material";
 import Notes from "@/components/shared/Notes";
 
+export const revalidate = "force-cache";
+
 export default async function Home() {
   const user = await currentUser();
 
