@@ -15,26 +15,21 @@ export default async function Home() {
 
   const pinnedNotes = await fetchNotes({ userId: user.id, pinned: true });
 
-  // console.log(pinnedNotes);
-
-  let message = "You haven't captured your ideas yet.";
-
   return (
     <Box
       sx={{
         p: { sm: "20px" },
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
         width: "100%",
       }}
     >
       <Box>
-        <CreateNote />
+        <CreateNote
+          notes={JSON.parse(JSON.stringify(homePageNotes))}
+          pinnedNotes={JSON.parse(JSON.stringify(pinnedNotes))}
+        />
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
           py: "80px",
           width: "100%",
@@ -63,7 +58,7 @@ export default async function Home() {
             <Notes notes={homePageNotes} />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </Box>
   );
 }

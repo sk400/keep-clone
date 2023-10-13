@@ -31,7 +31,10 @@ const Page = async () => {
           </Typography>
         </Box>
       )}
-      <Notes notes={archivedNotes} message={message} />
+      <Notes
+        notes={JSON.parse(JSON.stringify(archivedNotes))}
+        message={message}
+      />
     </Box>
   );
 };

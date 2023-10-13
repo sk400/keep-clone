@@ -1,6 +1,6 @@
 "use client";
 
-import { NoteType } from "@/typings";
+import { Action, NoteType } from "@/typings";
 import { useState } from "react";
 import {
   Archive,
@@ -11,11 +11,13 @@ import {
   PushPinOutlined,
 } from "@mui/icons-material";
 
-import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
+import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { updateNote } from "@/lib/actions/Note.actions";
 
 interface Props {
   note: NoteType;
+  setOptimisticNote: (action: Action) => void;
+  setPinnedNote: (action: Action) => void;
 }
 
 interface UpdateNote {
@@ -24,14 +26,48 @@ interface UpdateNote {
     archived?: boolean;
     deleted?: boolean;
   };
+  pinState?: "pin" | "unpin";
 }
 
-const Note = ({ note }: Props) => {
+const Note = ({ note, setOptimisticNote, setPinnedNote }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = async ({
     update: { pinned, archived, deleted },
+    pinState,
   }: UpdateNote) => {
+    if (!pinState) {
+      setOptimisticNote({
+        id: note._id,
+        note,
+        type: "remove",
+      });
+    } else {
+      if (pinState === "pin") {
+        setPinnedNote({
+          id: note._id,
+          note,
+          type: "add",
+        });
+        setOptimisticNote({
+          id: note._id,
+          note,
+          type: "remove",
+        });
+      } else if (pinState === "unpin") {
+        setPinnedNote({
+          id: note._id,
+          note,
+          type: "remove",
+        });
+        setOptimisticNote({
+          id: note._id,
+          note,
+          type: "add",
+        });
+      }
+    }
+
     await updateNote({
       noteId: note?._id,
       update: { pinned, archived, deleted },
@@ -131,6 +167,7 @@ const Note = ({ note }: Props) => {
                       update: {
                         pinned: false,
                       },
+                      pinState: "unpin",
                     })
                   }
                 >
@@ -143,6 +180,7 @@ const Note = ({ note }: Props) => {
                       update: {
                         pinned: true,
                       },
+                      pinState: "pin",
                     })
                   }
                 >
@@ -153,25 +191,25 @@ const Note = ({ note }: Props) => {
             <Box mt="auto" className="space-x-2">
               {note?.deleted ? (
                 <IconButton
-                  onClick={() =>
+                  onClick={() => {
                     handleClick({
                       update: {
                         deleted: false,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   <Delete />
                 </IconButton>
               ) : (
                 <IconButton
-                  onClick={() =>
+                  onClick={() => {
                     handleClick({
                       update: {
                         deleted: true,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   <DeleteOutline />
                 </IconButton>
@@ -179,25 +217,25 @@ const Note = ({ note }: Props) => {
 
               {note?.archived ? (
                 <IconButton
-                  onClick={() =>
+                  onClick={() => {
                     handleClick({
                       update: {
                         archived: false,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   <Archive />
                 </IconButton>
               ) : (
                 <IconButton
-                  onClick={() =>
+                  onClick={() => {
                     handleClick({
                       update: {
                         archived: true,
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   <ArchiveOutlined />
                 </IconButton>

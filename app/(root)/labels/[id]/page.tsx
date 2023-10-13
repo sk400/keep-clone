@@ -24,18 +24,15 @@ const Page = async ({ params }: Params) => {
   let message = "You have not any notes in this label.";
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <Box>
       <Box>
-        <CreateNote labelId={labelId} />
+        <CreateNote
+          notes={JSON.parse(JSON.stringify(labelNotes))}
+          labelId={labelId}
+        />
       </Box>
 
-      {labelNotes?.length === 0 && (
+      {/* {labelNotes?.length === 0 && (
         <Typography variant="h6" color="black" textAlign="center" mt={10}>
           {message}
         </Typography>
@@ -50,7 +47,7 @@ const Page = async ({ params }: Params) => {
         >
           <Notes notes={labelNotes} message={message} />
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };

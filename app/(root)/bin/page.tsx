@@ -51,7 +51,10 @@ const Page = async () => {
           <ClearBin />
         </Box>
       )}
-      <Notes notes={deletedNotes} message={message} />
+      <Notes
+        notes={JSON.parse(JSON.stringify(deletedNotes))}
+        message={message}
+      />
     </Box>
   );
 };

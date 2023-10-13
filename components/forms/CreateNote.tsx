@@ -1,23 +1,50 @@
 "use client";
 
-import { Box, IconButton, InputBase, Stack } from "@mui/material";
+import { Box, IconButton, InputBase, Stack, Typography } from "@mui/material";
 import { AddCircleRounded } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { addNote } from "@/lib/actions/Note.actions";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
+import { experimental_useOptimistic as useOptimistic } from "react";
+import { Action, NoteType } from "@/typings";
+import Notes from "../shared/Notes";
 
 interface Props {
   labelId?: string;
+  notes: NoteType[];
+  pinnedNotes?: NoteType[];
 }
 
-const CreateNote = ({ labelId }: Props) => {
+// data from prop
+// useOptimistic - array of pinned notes
+// reducer = if "add" -> addNote, if "remove" -> remove
+// use -
+
+const CreateNote = ({ labelId, notes, pinnedNotes }: Props) => {
+  const { userId } = useAuth();
+  const pathname = usePathname();
   const [noteData, setNoteData] = useState({
     title: "",
     content: "",
   });
-  const { userId } = useAuth();
-  const pathname = usePathname();
+  const [optimisticNotes, addOptimisticNote] = useOptimistic(
+    notes,
+    (state: NoteType[], newNote: NoteType) => [...state, newNote]
+  );
+
+  const [pinNotes, setPinnedNote] = useOptimistic(
+    pinnedNotes ?? [],
+    (state: NoteType[], { id, note, type }: Action) => {
+      if (type === "add") {
+        return [...state, note];
+      } else {
+        return state.filter((item) => item._id !== id);
+      }
+    }
+  );
+
+  let message = "You haven't captured your ideas yet.";
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -29,6 +56,22 @@ const CreateNote = ({ labelId }: Props) => {
 
   const handleClick = async () => {
     if (noteData.title.length !== 0 && noteData.content.length !== 0) {
+      const newNote = {
+        _id: "hjnfnhnhbbtahh",
+        title: noteData.title,
+        content: noteData.content,
+        userId: userId!,
+        pinned: false,
+        archived: false,
+        deleted: false,
+      };
+
+      addOptimisticNote(newNote);
+      setNoteData({
+        title: "",
+        content: "",
+      });
+
       await addNote({
         title: noteData.title,
         content: noteData.content,
@@ -36,68 +79,101 @@ const CreateNote = ({ labelId }: Props) => {
         path: pathname,
         labelId: labelId && labelId,
       });
-      setNoteData({
-        title: "",
-        content: "",
-      });
     } else {
       //   feedback by toast
     }
   };
 
   return (
-    <Box
-      className="prompt"
-      sx={{
-        width: { sm: "480px" },
-        maxWidth: "500px",
-        height: "200px",
-        borderRadius: "0.375rem",
-        position: "relative",
-        px: "24px",
-        py: "18px",
-      }}
-    >
-      <IconButton
+    <Box>
+      <Box
+        className="prompt"
         sx={{
-          position: "absolute",
-          bottom: 5,
-          right: 5,
-          zIndex: 2,
+          width: { sm: "480px" },
+          maxWidth: "500px",
+          height: "200px",
+          borderRadius: "0.375rem",
+          position: "relative",
+          px: "24px",
+          py: "18px",
+          mb: 10,
+          mx: "auto",
         }}
-        disabled={noteData.title.length === 0 && noteData.content.length === 0}
-        onClick={() => handleClick()}
       >
-        <AddCircleRounded
-          className="amber-500"
+        <IconButton
           sx={{
-            width: "30px",
-            height: "30px",
+            position: "absolute",
+            bottom: 5,
+            right: 5,
+            zIndex: 2,
           }}
-        />
-      </IconButton>
-      <Stack direction="column" spacing={1}>
-        <InputBase
-          placeholder="Title"
-          type="text"
-          className="font-bold"
-          name="title"
-          sx={{
-            fontWeight: "bold",
-          }}
-          multiline
-          onChange={handleChange}
-          value={noteData?.title}
-        />
-        <InputBase
-          placeholder="Take a note..."
-          type="text"
-          name="content"
-          multiline
-          onChange={handleChange}
-          value={noteData?.content}
-        />
-      </Stack>
+          disabled={
+            noteData.title.length === 0 && noteData.content.length === 0
+          }
+          onClick={() => handleClick()}
+        >
+          <AddCircleRounded
+            className="amber-500"
+            sx={{
+              width: "30px",
+              height: "30px",
+            }}
+          />
+        </IconButton>
+        <Stack direction="column" spacing={1}>
+          <InputBase
+            placeholder="Title"
+            type="text"
+            className="font-bold"
+            name="title"
+            sx={{
+              fontWeight: "bold",
+            }}
+            multiline
+            onChange={handleChange}
+            value={noteData?.title}
+          />
+          <InputBase
+            placeholder="Take a note..."
+            type="text"
+            name="content"
+            multiline
+            onChange={handleChange}
+            value={noteData?.content}
+          />
+        </Stack>
+      </Box>
+
+      <Box className="py-20 w-full">
+        {pinNotes?.length === 0 && optimisticNotes?.length === 0 && (
+          <Typography variant="h6" color="black" textAlign="center">
+            {message}
+          </Typography>
+        )}
+
+        {pinNotes?.length !== 0 && (
+          <Box sx={{ mb: 5 }}>
+            <Typography variant="overline" display="block" gutterBottom>
+              Pinned
+            </Typography>
+            <Notes
+              notes={JSON.parse(JSON.stringify(pinNotes))}
+              setPinnedNote={setPinnedNote}
+            />
+          </Box>
+        )}
+        {optimisticNotes?.length !== 0 && (
+          <Box>
+            <Typography variant="overline" display="block" gutterBottom>
+              Others
+            </Typography>
+            <Notes
+              notes={JSON.parse(JSON.stringify(optimisticNotes))}
+              setPinnedNote={setPinnedNote}
+            />
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

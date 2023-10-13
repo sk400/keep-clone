@@ -3,7 +3,7 @@ export interface NoteType {
   title: string;
   content: string;
   userId: string;
-  label: {
+  label?: {
     _id: string;
     name: string;
     userId: string;
@@ -17,4 +17,10 @@ export interface Label {
   _id: string;
   name: string;
   userId: string;
+}
+
+export interface Action {
+  id?: string;
+  note: NoteType;
+  type: "add" | "remove";
 }
