@@ -5,7 +5,7 @@ import { AddCircleRounded } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { addNote } from "@/lib/actions/Note.actions";
 import { useAuth } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { experimental_useOptimistic as useOptimistic } from "react";
 import { Action, NoteType } from "@/typings";
 import Notes from "../shared/Notes";
@@ -16,14 +16,11 @@ interface Props {
   pinnedNotes?: NoteType[];
 }
 
-// data from prop
-// useOptimistic - array of pinned notes
-// reducer = if "add" -> addNote, if "remove" -> remove
-// use -
-
 const CreateNote = ({ labelId, notes, pinnedNotes }: Props) => {
   const { userId } = useAuth();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("query");
   const [noteData, setNoteData] = useState({
     title: "",
     content: "",
@@ -36,10 +33,13 @@ const CreateNote = ({ labelId, notes, pinnedNotes }: Props) => {
   const [pinNotes, setPinnedNote] = useOptimistic(
     pinnedNotes ?? [],
     (state: NoteType[], { id, note, type }: Action) => {
-      if (type === "add") {
-        return [...state, note];
-      } else {
-        return state.filter((item) => item._id !== id);
+      switch (type) {
+        case "add":
+          return [...state, note];
+        case "remove":
+          return state.filter((item) => item._id !== id);
+        default:
+          return state;
       }
     }
   );

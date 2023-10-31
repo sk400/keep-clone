@@ -19,35 +19,22 @@ const Page = async ({ params }: Params) => {
 
   const labelNotes = await fetchLabelNotes({ userId: user.id, labelId });
 
-  // console.log(labelNotes);
+  const generalNotes = labelNotes.filter(
+    (note) =>
+      note.pinned === false && note.archived === false && note.deleted === false
+  );
 
-  let message = "You have not any notes in this label.";
+  const pinnedNotes = labelNotes.filter((note) => note.pinned === true);
 
   return (
     <Box>
       <Box>
         <CreateNote
-          notes={JSON.parse(JSON.stringify(labelNotes))}
+          notes={JSON.parse(JSON.stringify(generalNotes))}
           labelId={labelId}
+          pinnedNotes={JSON.parse(JSON.stringify(pinnedNotes))}
         />
       </Box>
-
-      {/* {labelNotes?.length === 0 && (
-        <Typography variant="h6" color="black" textAlign="center" mt={10}>
-          {message}
-        </Typography>
-      )}
-
-      {labelNotes?.length !== 0 && (
-        <Box
-          sx={{
-            width: "100%",
-            mt: "56px",
-          }}
-        >
-          <Notes notes={labelNotes} message={message} />
-        </Box>
-      )} */}
     </Box>
   );
 };

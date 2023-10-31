@@ -17,6 +17,7 @@ interface DataType {
   pinned?: true;
   deleted?: true;
   archived?: true;
+  searchTerm?: string;
 }
 
 export const fetchNotes = async ({
@@ -24,6 +25,7 @@ export const fetchNotes = async ({
   pinned,
   archived,
   deleted,
+  searchTerm,
 }: DataType) => {
   try {
     connectToDB();
@@ -35,12 +37,45 @@ export const fetchNotes = async ({
       deleted: deleted ?? false,
     };
 
-    const notes = await Note.find(query);
+    let notes = await Note.find(query);
+
+    if (searchTerm && searchTerm.length > 0) {
+      notes = notes.filter(
+        (note) =>
+          note.title.includes(searchTerm) || note.content.includes(searchTerm)
+      );
+    }
 
     return notes;
   } catch (error: any) {
     console.log(error);
     throw new Error("Failed to fetch all notes.", error.message);
+  }
+};
+
+export const searchNotes = async ({
+  userId,
+  searchTerm,
+}: {
+  userId: string;
+  searchTerm: string;
+}) => {
+  try {
+    connectToDB();
+
+    let notes = await Note.find({ userId });
+
+    if (searchTerm && searchTerm.length > 0) {
+      notes = notes.filter(
+        (note) =>
+          note.title.includes(searchTerm) || note.content.includes(searchTerm)
+      );
+    }
+
+    return notes;
+  } catch (error: any) {
+    console.log(error);
+    throw new Error("Failed to fetch searched notes.", error.message);
   }
 };
 

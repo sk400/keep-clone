@@ -35,7 +35,6 @@ import {
   LabelOutlined,
   LabelRounded,
   LightbulbOutlined,
-  Router,
 } from "@mui/icons-material";
 
 import { useRouter } from "next/navigation";
@@ -47,6 +46,8 @@ import {
 } from "@/lib/actions/Label.actions";
 import { Label } from "@/typings";
 import Link from "next/link";
+import Image from "next/image";
+import Searchbar from "./Searchbar";
 
 const drawerWidth = 240;
 
@@ -215,19 +216,38 @@ const LayOut = ({
             justifyContent="space-between"
             width="100%"
           >
-            <Stack direction="row" spacing={1} alignItems="center">
-              <img
-                alt="logo"
-                src="https://www.gstatic.com/images/branding/product/1x/keep_2020q4_48dp.png"
-                style={{
-                  width: "40px",
-                }}
+            {/* Logo */}
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              sx={{
+                display: { xs: "none", sm: "flex" },
+              }}
+            >
+              <Image
+                alt="keep-logo"
+                src="/keep-logo.png"
+                width={40}
+                height={40}
               />
+
               <Typography fontSize="24px" color="gray" fontWeight="">
                 Keep
               </Typography>
             </Stack>
-            <UserButton afterSignOutUrl="/sign-in" />
+            {/* Searchbar */}
+            <Searchbar />
+            {/* User profile */}
+            <Box
+              sx={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+              }}
+            >
+              <UserButton afterSignOutUrl="/sign-in" />
+            </Box>
           </Stack>
         </Toolbar>
       </AppBar>
@@ -246,6 +266,23 @@ const LayOut = ({
         {" "}
         <DrawerHeader />
         <Divider />
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{
+            display: { xs: "flex", sm: "none" },
+            pt: 2,
+            pb: 1,
+            pl: 2,
+          }}
+        >
+          <Image alt="keep-logo" src="/keep-logo.png" width={40} height={40} />
+
+          <Typography fontSize="24px" color="gray" fontWeight="">
+            Keep
+          </Typography>
+        </Stack>
         <List>
           {/* Notes */}
           <Link

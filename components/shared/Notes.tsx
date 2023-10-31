@@ -10,17 +10,20 @@ import { experimental_useOptimistic as useOptimistic } from "react";
 interface Props {
   notes: NoteType[];
   message?: string;
-  setPinnedNote: (action: Action) => void;
+  setPinnedNote?: (action: Action) => void;
 }
 
 const Notes = ({ notes, message, setPinnedNote }: Props) => {
   const [optimisticNotes, setOptimisticNote] = useOptimistic(
     notes,
     (state: NoteType[], { id, note, type }: Action) => {
-      if (type === "add") {
-        return [...state, note];
-      } else {
-        return state.filter((item) => item._id !== id);
+      switch (type) {
+        case "add":
+          return [...state, note];
+        case "remove":
+          return state.filter((item) => item._id !== id);
+        default:
+          return state;
       }
     }
   );

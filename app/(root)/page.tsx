@@ -1,8 +1,7 @@
 import CreateNote from "@/components/forms/CreateNote";
 import { fetchNotes } from "@/lib/actions/Note.actions";
 import { currentUser } from "@clerk/nextjs/app-beta";
-import { Box, Typography } from "@mui/material";
-import Notes from "@/components/shared/Notes";
+import { Box } from "@mui/material";
 
 export const revalidate = "force-cache";
 
@@ -11,9 +10,14 @@ export default async function Home() {
 
   if (!user) return null;
 
-  const homePageNotes = await fetchNotes({ userId: user.id });
+  const homePageNotes = await fetchNotes({
+    userId: user.id,
+  });
 
-  const pinnedNotes = await fetchNotes({ userId: user.id, pinned: true });
+  const pinnedNotes = await fetchNotes({
+    userId: user.id,
+    pinned: true,
+  });
 
   return (
     <Box
@@ -28,37 +32,6 @@ export default async function Home() {
           pinnedNotes={JSON.parse(JSON.stringify(pinnedNotes))}
         />
       </Box>
-
-      {/* <Box
-        sx={{
-          py: "80px",
-          width: "100%",
-        }}
-      >
-        {pinnedNotes?.length === 0 && homePageNotes?.length === 0 && (
-          <Typography variant="h6" color="black" textAlign="center">
-            {message}
-          </Typography>
-        )}
-
-        {pinnedNotes?.length !== 0 && (
-          <Box sx={{ mb: 5 }}>
-            <Typography variant="overline" display="block" gutterBottom>
-              Pinned
-            </Typography>
-            <Notes notes={pinnedNotes} />
-          </Box>
-        )}
-
-        {homePageNotes?.length !== 0 && (
-          <Box>
-            <Typography variant="overline" display="block" gutterBottom>
-              Others
-            </Typography>
-            <Notes notes={homePageNotes} />
-          </Box>
-        )}
-      </Box> */}
     </Box>
   );
 }

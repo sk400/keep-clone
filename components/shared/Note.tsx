@@ -13,11 +13,12 @@ import {
 
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { updateNote } from "@/lib/actions/Note.actions";
+import { usePathname } from "next/navigation";
 
 interface Props {
   note: NoteType;
   setOptimisticNote: (action: Action) => void;
-  setPinnedNote: (action: Action) => void;
+  setPinnedNote?: (action: Action) => void;
 }
 
 interface UpdateNote {
@@ -31,41 +32,49 @@ interface UpdateNote {
 
 const Note = ({ note, setOptimisticNote, setPinnedNote }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
+  const pathname = usePathname();
+
+  // console.log(note.pinned);
 
   const handleClick = async ({
     update: { pinned, archived, deleted },
     pinState,
   }: UpdateNote) => {
-    if (!pinState) {
-      setOptimisticNote({
-        id: note._id,
-        note,
-        type: "remove",
-      });
-    } else {
-      if (pinState === "pin") {
-        setPinnedNote({
-          id: note._id,
-          note,
-          type: "add",
-        });
+    switch (pinState) {
+      case "pin":
         setOptimisticNote({
           id: note._id,
           note,
           type: "remove",
         });
-      } else if (pinState === "unpin") {
-        setPinnedNote({
-          id: note._id,
-          note,
-          type: "remove",
-        });
+        setPinnedNote &&
+          setPinnedNote({
+            id: note._id,
+            note,
+            type: "add",
+          });
+        break;
+      case "unpin":
+        setPinnedNote &&
+          setPinnedNote({
+            id: note._id,
+            note,
+            type: "remove",
+          });
         setOptimisticNote({
           id: note._id,
           note,
           type: "add",
         });
-      }
+
+        break;
+      default:
+        setOptimisticNote({
+          id: note._id,
+          note,
+          type: "remove",
+        });
+        break;
     }
 
     await updateNote({
@@ -159,30 +168,41 @@ const Note = ({ note, setOptimisticNote, setPinnedNote }: Props) => {
               padding: 1,
             }}
           >
-            <Box>
+            <Box
+              sx={{
+                display:
+                  pathname === "/" || pathname.includes("/labels") === true
+                    ? "block"
+                    : "none",
+              }}
+            >
               {note.pinned ? (
                 <IconButton
-                  onClick={() =>
+                  key={1}
+                  onClick={() => {
                     handleClick({
                       update: {
                         pinned: false,
                       },
                       pinState: "unpin",
-                    })
-                  }
+                    });
+                    // console.log("pinned");
+                  }}
                 >
                   <PushPin />
                 </IconButton>
               ) : (
                 <IconButton
-                  onClick={() =>
+                  key={2}
+                  onClick={() => {
+                    // console.log("unpinned");
                     handleClick({
                       update: {
                         pinned: true,
                       },
                       pinState: "pin",
-                    })
-                  }
+                    });
+                  }}
                 >
                   <PushPinOutlined />
                 </IconButton>
