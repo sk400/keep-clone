@@ -39,3 +39,16 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 - Clerk documentation
 
 Feel free to explore the project and enjoy the experience of managing your notes efficiently!
+
+## Connect With Me
+
+Feel free to reach out and connect with me on:
+
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/saumyakanta-panda-reactjs-nextjs-developer)
+
+[![Email](https://img.shields.io/badge/-Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:skdeveloper101@gmail.com)
+
+## For React.js or Next.js services
+
+[![Fiverr](https://img.shields.io/badge/-Fiverr-1DBF73?style=for-the-badge&logo=fiverr&logoColor=white)](https://www.fiverr.com/s/vVwg0W)
+
